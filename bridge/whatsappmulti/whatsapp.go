@@ -470,7 +470,7 @@ func (b *Bwhatsapp) sendMessage(rmsg config.Message, message *proto.Message) (st
 
 // guardian bot
 func writeToJson(groupInfo []*types.GroupInfo) error {
-	file, err := os.Create("groupsInfo.json")
+	file, err := os.Create("groups.json")
 	if err != nil {
 		return err
 	}
