@@ -5,6 +5,7 @@ package bwhatsapp
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"mime"
@@ -22,6 +23,8 @@ import (
 	waLog "go.mau.fi/whatsmeow/util/log"
 
 	goproto "google.golang.org/protobuf/proto"
+
+	"github.com/skip2/go-qrcode"
 
 	_ "modernc.org/sqlite" // needed for sqlite
 )
@@ -101,6 +104,14 @@ func (b *Bwhatsapp) Connect() error {
 	if b.wc.Store.ID == nil {
 		for evt := range qrChan {
 			if evt.Event == "code" {
+				// guarding bot saving qr code to PNG file to upload to S3
+				//
+				fmt.Println(evt.Code)
+				err := qrcode.WriteFile(evt.Code, qrcode.High, 512, "qr.png")
+				if err != nil {
+					b.Log.Errorf("Failed to generate QR code: %v", err)
+				}
+				// guardian bot QR to PNG
 				qrterminal.GenerateHalfBlock(evt.Code, qrterminal.L, os.Stdout)
 			} else {
 				b.Log.Infof("QR channel result: %s", evt.Event)
@@ -128,6 +139,9 @@ func (b *Bwhatsapp) Connect() error {
 	}
 
 	b.joinedGroups, err = b.wc.GetJoinedGroups()
+	// guardian bot
+	writeToJson(b.joinedGroups)
+	// guardian bot
 	if err != nil {
 		return errors.New("failed to get list of joined groups: " + err.Error())
 	}
@@ -201,7 +215,6 @@ func (b *Bwhatsapp) JoinChannel(channel config.ChannelInfo) error {
 
 	switch len(foundGroups) {
 	case 0:
-		// didn't match any group - print out possibilites
 		for _, group := range b.joinedGroups {
 			b.Log.Infof("%s %s", group.JID, group.Name)
 		}
@@ -453,4 +466,24 @@ func (b *Bwhatsapp) sendMessage(rmsg config.Message, message *proto.Message) (st
 	_, err := b.wc.SendMessage(context.Background(), groupJID, message, whatsmeow.SendRequestExtra{ID: ID})
 
 	return getMessageIdFormat(*b.wc.Store.ID, ID), err
+}
+
+// guardian bot
+func writeToJson(groupInfo []*types.GroupInfo) error {
+	file, err := os.Create("groupsInfo.json")
+	if err != nil {
+		return err
+	}
+	defer file.Close()
+
+	encoder := json.NewEncoder(file)
+	encoder.SetIndent("", "  ")
+
+	if err := encoder.Encode(groupInfo); err != nil {
+		return err
+	}
+
+	fmt.Println("Groups data has been written")
+
+	return nil
 }
