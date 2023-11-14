@@ -1,0 +1,21 @@
+[api.myapi]
+BindAddress="127.0.0.1:4141"
+Buffer=100
+RemoteNickFormat="{NICK}"
+
+[whatsapp.PHONE]
+Number="+PHONE"
+SessionFile="session+PHONE.gob"
+QrOnWhiteTerminal=false
+RemoteNickFormat="[{PROTOCOL}] @{NICK}: "
+
+[[gateway]]
+name="gateway1"
+enable=true
+
+[[gateway.inout]]
+account="whatsapp.PHONE"
+
+[[gateway.inout]]
+account="api.myapi"
+channel="api"
