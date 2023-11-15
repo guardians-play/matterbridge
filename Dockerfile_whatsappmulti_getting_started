@@ -6,13 +6,13 @@ RUN apk --no-cache add go git \
         && CGO_ENABLED=0 go build -tags whatsappmulti,nomsteams,nozulip -mod vendor -ldflags "-X github.com/42wim/matterbridge/version.GitHash=$(git log --pretty=format:'%h' -n 1)" -o /bin/matterbridge
 
 FROM alpine
-RUN apk --no-cache add ca-certificates mailcap
-COPY --from=builder /bin/matterbridge /bin/matterbridge
+RUN apk --no-cache add ca-certificates mailcap aws-cli
 
 RUN mkdir /etc/matterbridge
-COPY --from=builder /go/src/matterbridge/getting_started.sh /etc/matterbridge
-COPY --from=builder /go/src/matterbridge/template.toml /etc/matterbridge
-
 WORKDIR /etc/matterbridge
 
-ENTRYPOINT ["sh", "./getting_started.sh"]
+COPY --from=builder /bin/matterbridge /etc/matterbridge/
+COPY --from=builder /go/src/matterbridge/getting_started.sh /etc/matterbridge/
+COPY --from=builder /go/src/matterbridge/template.toml /etc/matterbridge/
+
+CMD ["sh", "/etc/matterbridge/getting_started.sh"]
