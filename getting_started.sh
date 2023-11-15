@@ -1,23 +1,40 @@
 #!/bin/bash
 
-set -x
+# set -xe
 
 S3_BUCKET="887615018263-us-west-2-guardian-data"
-
-PHONE="${1:-972547789125}"
+GROUP_FILE="groups.json"
+QR_FILE="qr.png"
+CONF_FILE="matterbridge.toml"
+# PHONE="${1:-972547789125}"
 
 clean() {
     echo "cleaning"
-    rm -f qr.png matterbridge.toml groupsInfo.jsonb session+*.gob.db
+    rm -f ${QR_FILE} ${CONF_FILE} ${GROUP_FILE} session+${PHONE}.gob.db
 }
 
 # Check if process is running, for not waiting to the files to arrive
 check_if_matter_up() {
     echo "checking if process is up"
-    if ! ps aux | grep matterbridge | grep -v grep; then
+    if ! ps aux | grep /etc/matterbridge/matterbridge | grep -v grep; then
         echo "matterbridge process is not running"
         exit 1
     fi
+}
+
+# Upload to S3
+upload_file_to_s3() {
+  echo "uploading $1 to s3://${S3_BUCKET}/phone-data/${PHONE}/"
+  aws s3 cp $1 s3://${S3_BUCKET}/phone-data/${PHONE}/
+}
+
+# Wait for file to be written on filesystem
+wait_for_file() {
+  while [ ! -f $1 ]; do
+    sleep 1
+    echo "waiting for $1 to arrive"
+  done
+  echo "$1 file arrived"
 }
 
 # Run clean function
@@ -27,32 +44,21 @@ clean
 echo "getting started with phone $PHONE"
 
 echo "editing toml"
-sed "s|PHONE|$PHONE|" template.toml > matterbridge.toml
+sed "s|PHONE|$PHONE|" template.toml > ${CONF_FILE}
 
 echo "running matterbrigde in backgroud"
-./matterbridge &
+/etc/matterbridge/matterbridge &
 sleep 1
 
+# QR code
 check_if_matter_up
-while [ ! -f qr.png ]; do
-  sleep 1
-  echo "waiting for file to arrive"
-done
-echo "qr.png file arrived"
+wait_for_file ${QR_FILE} 
+upload_file_to_s3 ${QR_FILE}
 
-echo "uploading qr.png to S3"
-aws s3 cp qr.png s3://${S3_BUCKET}/phone-data/${PHONE}/
-
-echo "waiting for groupsInfo.json file"
+# Group file
 check_if_matter_up
-while [ ! -f groupsInfo.json ]; do
-  sleep 1
-  echo "waiting for file to arrive"
-done
-echo "groupsInfo.json file arrived"
+wait_for_file ${GROUP_FILE}
+upload_file_to_s3 ${GROUP_FILE}
 
-echo "uploading groupsInfo.json to S3"
-aws s3 cp groupsInfo.json s3://${S3_BUCKET}/phone-data/${PHONE}/
-
-echo "uploading session file to S3"
-aws s3 cp session+${PHONE}.gob.db s3://${S3_BUCKET}/phone-data/${PHONE}/
+# Session File
+upload_file_to_s3 session+${PHONE}.gob.db
