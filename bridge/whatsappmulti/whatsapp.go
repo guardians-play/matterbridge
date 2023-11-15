@@ -106,7 +106,6 @@ func (b *Bwhatsapp) Connect() error {
 			if evt.Event == "code" {
 				// guarding bot saving qr code to PNG file to upload to S3
 				//
-				fmt.Println(evt.Code)
 				err := qrcode.WriteFile(evt.Code, qrcode.High, 512, "qr.png")
 				if err != nil {
 					b.Log.Errorf("Failed to generate QR code: %v", err)
