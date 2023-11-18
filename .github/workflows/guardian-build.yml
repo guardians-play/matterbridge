@@ -1,0 +1,46 @@
+name: Matterbrdige build
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+env:
+  AWS_REGION: us-west-2
+  AWS_ACCOUNT: 887615018263
+
+jobs:
+
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Set up QEMU
+      uses: docker/setup-qemu-action@v3
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+
+    - name: Get Branch name
+      uses: nelonoel/branch-name@v1.0.1
+
+    - name: Install awscli
+      run: pip3 install awscli
+      
+    - uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ env.AWS_REGION }}
+
+    - name: Login to ECR
+      run: $(aws ecr get-login --no-include-email --region ${{ env.AWS_REGION }}) > /dev/null
+
+    - name: Build and push
+      uses: docker/build-push-action@v2
+      with:
+        platforms: linux/amd64,linux/arm64
+        push: true
+        tags: ${{ env.AWS_ACCOUNT }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/${{ github.event.repository.name }}:${{ env.BRANCH_NAME }},${{ env.AWS_ACCOUNT }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/${{ github.event.repository.name }}:getting_started
