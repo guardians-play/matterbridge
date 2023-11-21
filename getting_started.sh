@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# set -xe
+set -x
 # Environment variables
 # phoneNumber e.g 972505152183
 # userStorage e.g. s3://us-west-2-guardian-data154316-dev/private/us-west-2:6da317cd-7edd-472d-8d3c-6aee1296ac3c/phone-data/972542524544/
@@ -27,7 +27,7 @@ check_if_matter_up() {
 # Upload to S3
 upload_file_to_s3() {
   echo "uploading $1 to ${userStorage}"
-  aws s3 cp $1 ${userStorage}
+  aws s3 cp $1 ${userStorage}/$1
 }
 
 # Wait for file to be written on filesystem
