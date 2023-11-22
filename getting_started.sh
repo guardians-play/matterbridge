@@ -1,7 +1,7 @@
 #!/bin/bash
 
 set -x
-# Environment variables
+# Environment variables:
 # phoneNumber e.g 972505152183
 # userStorage e.g. s3://us-west-2-guardian-data154316-dev/private/us-west-2:6da317cd-7edd-472d-8d3c-6aee1296ac3c/phone-data/972542524544/
 
@@ -9,6 +9,17 @@ S3_BUCKET="887615018263-us-west-2-guardian-data"
 GROUP_FILE="groups.json"
 QR_FILE="qr.png"
 CONF_FILE="matterbridge.toml"
+
+check_env_exists() {
+  if [[ -n "$phoneNumber" && -n "$userStorage" ]]; then
+    echo "variables are set"
+  else
+    echo "One or both variables are not set. Exiting."
+    echo "phoneNumber: ${phoneNumber}"
+    echo "userStorage: ${userStorage}"
+    exit 1
+  fi
+}
 
 clean() {
     echo "cleaning"
@@ -41,6 +52,9 @@ wait_for_file() {
 
 # Run clean function
 clean
+
+# check environment varaibles
+check_env_exists
 
 # Start
 echo "getting started with phone $phoneNumber"
