@@ -1,11 +1,11 @@
 #!/bin/bash
 
-set -x
+# set -x
 # Environment variables:
 # phoneNumber e.g 972505152183
 # userStorage e.g. s3://us-west-2-guardian-data154316-dev/private/us-west-2:6da317cd-7edd-472d-8d3c-6aee1296ac3c/phone-data/972542524544/
 
-S3_BUCKET="887615018263-us-west-2-guardian-data"
+# files
 GROUP_FILE="groups.json"
 QR_FILE="qr.png"
 CONF_FILE="matterbridge.toml"
@@ -49,6 +49,10 @@ wait_for_file() {
   done
   echo "$1 file arrived"
 }
+
+# environment
+echo "working on $phoneNumber"
+echo "destination bucket $userStorage"
 
 # Run clean function
 clean
