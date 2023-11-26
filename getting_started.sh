@@ -26,6 +26,13 @@ clean() {
     rm -f ${QR_FILE} ${CONF_FILE} ${GROUP_FILE} session+${phoneNumber}.gob.db
 }
 
+remove_trailing_slash() {
+    local input="$1"
+    # Remove trailing "/"
+    userStorage="${input%/}"
+    echo "$userStorage"
+}
+
 # Check if process is running, for not waiting to the files to arrive
 check_if_matter_up() {
     echo "checking if process is up"
@@ -59,6 +66,8 @@ clean
 
 # check environment varaibles
 check_env_exists
+remove_trailing_slash $userStorage
+echo "userStorage: $userStorage"
 
 # Start
 echo "getting started with phone $phoneNumber"
