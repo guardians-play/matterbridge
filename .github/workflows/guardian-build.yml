@@ -15,7 +15,9 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    # - uses: actions/checkout@v4
+    
+    - name: checkout
+      uses: actions/checkout@v4
 
     - name: Set up QEMU
       uses: docker/setup-qemu-action@v3
@@ -23,8 +25,8 @@ jobs:
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v3
 
-    - name: Get Branch name
-      uses: nelonoel/branch-name@v1.0.1
+    # - name: Get Branch name
+    #   uses: nelonoel/branch-name@v1.0.1
 
     - name: Install awscli
       run: pip3 install awscli
@@ -45,7 +47,6 @@ jobs:
         platforms: linux/amd64,linux/arm64
         push: true
         tags: |
-          ${{ env.AWS_ACCOUNT }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/${{ github.event.repository.name }}:${{ env.BRANCH_NAME }}
           ${{ env.AWS_ACCOUNT }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/${{ github.event.repository.name }}:getting_started
     
     - name: Build and push runtime container
