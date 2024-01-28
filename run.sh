@@ -8,11 +8,11 @@
 # userStorage e.g. s3://us-west-2-guardian-data154316-dev/private/us-west-2:6da317cd-7edd-472d-8d3c-6aee1296ac3c/phone-data/${phoneNumber}/
 
 # files
-phoneNumber="972525583454"
+# phoneNumber="972525583454"
 CONF_FILE="matterbridge.toml"
 SESSION_FILE="session+${phoneNumber}.gob.db"
 FILE_DESTINATION="/etc/matterbridge/"
-userStorage="s3://us-west-2-guardian-data154316-dev/private/us-west-2:6da317cd-7edd-472d-8d3c-6aee1296ac3c/phone-data/${phoneNumber}"
+# userStorage="s3://us-west-2-guardian-data154316-dev/private/us-west-2:6da317cd-7edd-472d-8d3c-6aee1296ac3c/phone-data/${phoneNumber}"
 
 # download from S3
 donwload_from_s3() {
