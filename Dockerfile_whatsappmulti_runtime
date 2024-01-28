@@ -15,4 +15,4 @@ COPY --from=builder /bin/matterbridge /etc/matterbridge/
 COPY --from=builder /go/src/matterbridge/run.sh /etc/matterbridge/
 
 ENTRYPOINT [ "sh", "run.sh" ]
-CMD ["/etc/matterbridge/matterbridge"]
+CMD ["/etc/matterbridge/matterbridge", "-conf", "/etc/matterbridge/matterbridge.toml"]

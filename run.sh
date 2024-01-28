@@ -17,7 +17,7 @@ FILE_DESTINATION="/etc/matterbridge/"
 # download from S3
 download_from_s3() {
     echo "Downloading $1 to ${userStorage}"
-    aws s3 cp --profile c $userStorage/$1 $FILE_DESTINATION/$1
+    aws s3 cp $userStorage/$1 $FILE_DESTINATION/$1
 }
 
 # environment debug
