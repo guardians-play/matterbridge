@@ -38,7 +38,7 @@ jobs:
     - name: Login to ECR
       run: $(aws ecr get-login --no-include-email --region ${{ env.AWS_REGION }}) > /dev/null
 
-    - name: Build and push
+    - name: Build and push getting started container
       uses: docker/build-push-action@v5
       with:
         file: Dockerfile_whatsappmulti_getting_started
@@ -47,3 +47,13 @@ jobs:
         tags: |
           ${{ env.AWS_ACCOUNT }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/${{ github.event.repository.name }}:${{ env.BRANCH_NAME }}
           ${{ env.AWS_ACCOUNT }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/${{ github.event.repository.name }}:getting_started
+    
+    - name: Build and push runtime container
+      uses: docker/build-push-action@v5
+      with:
+        file: Dockerfile_whatsappmulti_runtime
+        platforms: linux/amd64,linux/arm64
+        push: true
+        tags: |
+          ${{ env.AWS_ACCOUNT }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/${{ github.event.repository.name }}:runtime-${{ github.run_number }}
+          ${{ env.AWS_ACCOUNT }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/${{ github.event.repository.name }}:runtime
