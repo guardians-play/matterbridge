@@ -45,6 +45,7 @@ jobs:
       with:
         file: Dockerfile_whatsappmulti_getting_started
         platforms: linux/amd64,linux/arm64
+        context: .
         push: true
         tags: |
           ${{ env.AWS_ACCOUNT }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/${{ github.event.repository.name }}:getting_started
@@ -54,6 +55,7 @@ jobs:
       with:
         file: Dockerfile_whatsappmulti_runtime
         platforms: linux/amd64,linux/arm64
+        context: .
         push: true
         tags: |
           ${{ env.AWS_ACCOUNT }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/${{ github.event.repository.name }}:runtime-${{ github.run_number }}
