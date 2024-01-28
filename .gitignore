@@ -7,3 +7,8 @@ matterbridge.toml
 
 # Exclude IDE Files
 .vscode
+
+## Guardian 
+groupsinfo.json
+qr.png
+session+*.gob.db
