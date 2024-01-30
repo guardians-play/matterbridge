@@ -1,5 +1,5 @@
 [api.myapi]
-BindAddress="127.0.0.1:4141"
+BindAddress="0.0.0.0:4141"
 Buffer=100
 RemoteNickFormat="{NICK}"
 
