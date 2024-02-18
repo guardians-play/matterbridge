@@ -29,6 +29,10 @@ clean() {
     rm -f ${QR_FILE} ${CONF_FILE} ${GROUP_FILE} session+${phoneNumber}.gob.db
 }
 
+clean_cloud() {
+  aws s3 rm --recursive $userStorage/
+}
+
 remove_trailing_slash() {
     local input="$1"
     # Remove trailing "/"
@@ -64,13 +68,14 @@ wait_for_file() {
 echo "working on $phoneNumber"
 echo "destination bucket $userStorage"
 
-# Run clean function
-clean
-
 # check environment varaibles
 check_env_exists
 remove_trailing_slash $userStorage
 echo "userStorage: $userStorage"
+
+# Run clean function
+clean
+clean_cloud
 
 # Start
 echo "getting started with phone $phoneNumber"
