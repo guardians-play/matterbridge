@@ -76,7 +76,7 @@ echo "editing toml"
 sed "s|PHONE|$phoneNumber|" template.toml > ${CONF_FILE}
 
 echo "running matterbrigde in backgroud"
-/etc/matterbridge/matterbridge &
+/etc/matterbridge/matterbridge -debug &
 sleep 1
 
 # QR code
