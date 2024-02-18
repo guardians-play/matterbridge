@@ -13,6 +13,7 @@ CONF_FILE="matterbridge.toml"
 check_env_exists() {
   if [[ -n "$phoneNumber" && -n "$userStorage" ]]; then
     echo "variables are set"
+    echo "Working with phone numerb ${phoneNumber} and s3 path ${userStorage}"
   else
     echo "One or both variables are not set. Exiting."
     echo "phoneNumber: ${phoneNumber}"
