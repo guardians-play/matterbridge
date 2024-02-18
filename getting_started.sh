@@ -10,6 +10,8 @@ GROUP_FILE="groups.json"
 QR_FILE="qr.png"
 CONF_FILE="matterbridge.toml"
 
+echo "phoneReg -> Getting_started process started"
+
 check_env_exists() {
   if [[ -n "$phoneNumber" && -n "$userStorage" ]]; then
     echo "variables are set"
@@ -92,3 +94,5 @@ upload_file_to_s3 ${GROUP_FILE}
 
 # Session File
 upload_file_to_s3 session+${phoneNumber}.gob.db
+
+echo "phoneReg -> Getting_started process finished"
