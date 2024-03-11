@@ -61,7 +61,7 @@ jobs:
           ${{ env.AWS_ACCOUNT }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/${{ github.event.repository.name }}:runtime-${{ github.run_number }}
           ${{ env.AWS_ACCOUNT }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/${{ github.event.repository.name }}:runtime
 
-    - name: Build and push runtime container
+    - name: Build and push regresh container
       uses: docker/build-push-action@v5
       with:
         file: Dockerfile_whatsappmulti_refresh
