@@ -60,3 +60,14 @@ jobs:
         tags: |
           ${{ env.AWS_ACCOUNT }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/${{ github.event.repository.name }}:runtime-${{ github.run_number }}
           ${{ env.AWS_ACCOUNT }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/${{ github.event.repository.name }}:runtime
+
+    - name: Build and push runtime container
+      uses: docker/build-push-action@v5
+      with:
+        file: Dockerfile_whatsappmulti_refresh
+        platforms: linux/amd64 #,linux/arm64
+        context: .
+        push: true
+        tags: |
+          ${{ env.AWS_ACCOUNT }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/${{ github.event.repository.name }}:refresh-${{ github.run_number }}
+          ${{ env.AWS_ACCOUNT }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/${{ github.event.repository.name }}:refresh

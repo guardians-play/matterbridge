@@ -1,0 +1,18 @@
+FROM alpine AS builder
+
+COPY . /go/src/matterbridge
+RUN apk --no-cache add go git \
+        && cd /go/src/matterbridge \
+        && CGO_ENABLED=0 go build -tags whatsappmulti,nomsteams,nozulip -mod vendor -ldflags "-X github.com/42wim/matterbridge/version.GitHash=$(git log --pretty=format:'%h' -n 1)" -o /bin/matterbridge
+
+FROM alpine
+RUN apk --no-cache add ca-certificates mailcap aws-cli openssl
+
+RUN mkdir /etc/matterbridge
+WORKDIR /etc/matterbridge
+
+COPY --from=builder /bin/matterbridge /etc/matterbridge/
+COPY --from=builder /go/src/matterbridge/refresh.sh /etc/matterbridge/
+COPY --from=builder /go/src/matterbridge/template.toml /etc/matterbridge/
+
+CMD ["sh", "/etc/matterbridge/refresh.sh"]
