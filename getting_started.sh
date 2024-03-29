@@ -7,19 +7,20 @@
 
 # files
 GROUP_FILE="groups.json"
-QR_FILE="qr.png"
 CONF_FILE="matterbridge.toml"
+QR_FILE=${qrFilename:-qr.png}
 
 echo "phoneReg -> Getting_started process started"
 
 check_env_exists() {
-  if [[ -n "$phoneNumber" && -n "$userStorage" ]]; then
+  if [[ -n "$phoneNumber" && -n "$userStorage" && -n "$qrFilename" ]]; then
     echo "variables are set"
-    echo "Working with phone numerb ${phoneNumber} and s3 path ${userStorage}"
+    echo "Working with phone numerb ${phoneNumber}, s3 path ${userStorage}, and qr file name ${qrFilename}"
   else
-    echo "One or both variables are not set. Exiting."
+    echo "One or more variables are not set. Exiting."
     echo "phoneNumber: ${phoneNumber}"
     echo "userStorage: ${userStorage}"
+    echo "qrFilename: ${qrFilename}"
     exit 1
   fi
 }
