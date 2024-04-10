@@ -1,9 +1,8 @@
 #!/bin/bash
-
-set -e 
-
-# set -x
-# Environment variables:
+#
+# Group refresh is an opeation that loads a matterbridge.toml config without groups, inorder to get a refreshed group list from matterbridge.
+#
+# Required environment variables:
 # phoneNumber e.g 972505152183
 # userStorage e.g. s3://us-west-2-guardian-data154316-dev/private/us-west-2:6da317cd-7edd-472d-8d3c-6aee1296ac3c/phone-data/972542524544/
 
@@ -92,25 +91,24 @@ clean_cloud
 # Start
 echo "refresh groups with phone $phoneNumber"
 
-# Edit config.toml with phone number
-echo "editing toml"
-sed "s|PHONE|$phoneNumber|" template.toml > ${CONF_FILE}
-
 # Download session file from user storage
 download_file_from_s3 session+${phoneNumber}.gob.db
 
-# Download config file from user storage
-download_file_from_s3 ${CONF_FILE}
+# Edit template toml
+echo "editing toml"
+sed "s|PHONE|$phoneNumber|" template.toml > ${CONF_FILE}
 
 # Starting matterbridge
 echo "debug"
+echo "conf file"
 cat ${LOCAL_CONF_PATH}/${CONF_FILE}
+
 echo "running matterbrigde in backgroud"
 /etc/matterbridge/matterbridge -conf ${LOCAL_CONF_PATH}/${CONF_FILE} &
 sleep 1
 
 # Group file
-check_if_matter_up
+# check_if_matter_up
 wait_for_file ${GROUP_FILE}
 upload_file_to_s3 ${GROUP_FILE}
 
