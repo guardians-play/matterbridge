@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e 
+
 # set -x
 # Environment variables:
 # phoneNumber e.g 972505152183
@@ -9,6 +11,10 @@
 GROUP_FILE="groups.json"
 CONF_FILE="matterbridge.toml"
 LOCAL_CONF_PATH="/etc/matterbridge"
+
+echo "GROUP_FILE: ${GROUP_FILE}"
+echo "CONF_FILE: ${CONF_FILE}"
+echo "LOCAL_CONF_PATH: ${LOCAL_CONF_PATH}"
 
 echo "refresh groups -> started"
 
@@ -100,7 +106,7 @@ download_file_from_s3 ${CONF_FILE}
 echo "debug"
 cat ${LOCAL_CONF_PATH}/${CONF_FILE}
 echo "running matterbrigde in backgroud"
-/etc/matterbridge/matterbridge -config ${LOCAL_CONF_PATH}/${CONF_FILE} -debug &
+/etc/matterbridge/matterbridge -conf ${LOCAL_CONF_PATH}/${CONF_FILE} &
 sleep 1
 
 # Group file
