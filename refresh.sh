@@ -97,6 +97,8 @@ download_file_from_s3 session+${phoneNumber}.gob.db
 download_file_from_s3 ${CONF_FILE}
 
 # Starting matterbridge
+echo "debug"
+cat ${LOCAL_CONF_PATH}/${CONF_FILE}
 echo "running matterbrigde in backgroud"
 /etc/matterbridge/matterbridge -config ${LOCAL_CONF_PATH}/${CONF_FILE} -debug &
 sleep 1
