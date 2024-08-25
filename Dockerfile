@@ -12,3 +12,4 @@ RUN mkdir /etc/matterbridge \
   && touch /etc/matterbridge/matterbridge.toml \
   && ln -sf /matterbridge.toml /etc/matterbridge/matterbridge.toml
 ENTRYPOINT ["/bin/matterbridge", "-conf", "/etc/matterbridge/matterbridge.toml"]
+
